@@ -1,5 +1,6 @@
-const Task = require('../models/Task');
-const User = require('../models/User');
+const Task = require('./models/Task');
+const User = require('./models/User');
+const { taskResolver, userResolver } = require('./resolvers')
 
 const {
   GraphQLObjectType,
@@ -21,7 +22,7 @@ const TaskType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parent, args) {
-        return User.findById(parent.userId);
+        return userResolver.findById(parent.UserId);
       },
     },
     created: { type: GraphQLString },
@@ -45,27 +46,27 @@ const RootQuery = new GraphQLObjectType({
     tasks: {
       type: new GraphQLList(TaskType),
       resolve(parent, args) {
-        return Task.find();
+        return taskResolver.find();
       },
     },
     task: {
       type: TaskType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return Task.findById(args.id);
+        return taskResolver.findById(args.id);
       },
     },
     users: {
       type: new GraphQLList(UserType),
       resolve(parent, args) {
-        return User.find();
+        return userResolver.find();
       },
     },
     user: {
       type: UserType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return User.findById(args.id);
+        return userResolver.findById(args.id);
       },
     },
   },
@@ -79,16 +80,11 @@ const mutation = new GraphQLObjectType({
     addUser: {
       type: UserType,
       args: {
-        name: { type: GraphQLNonNull(GraphQLString) },
+        username: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) },
       },
       resolve(parent, args) {
-        const user = new User({
-          name: args.name,
-          password: args.password,
-        });
-
-        return user.save();
+        return userResolver.create(args.username, args.password);
       },
     },
     // Delete a user
@@ -99,14 +95,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
-        Task.find({ userId: args.id }).then((tasks) => {
-          tasks.forEach((task) => {
-            task.userId = null;
-            task.save()
-          });
-        });
-
-        return User.findByIdAndRemove(args.id);
+        return userResolver.findByIdAndRemove(args.id);
       },
     },
     // Add a task
@@ -129,14 +118,7 @@ const mutation = new GraphQLObjectType({
         userId: { type: GraphQLID},
       },
       resolve(parent, args) {
-        const task = new Task({
-          name: args.name,
-          description: args.description,
-          status: args.status,
-          userId: args.userId,
-        });
-
-        return task.save();
+        return taskResolver.create(args.title, args.description, args.status, args.userId);
       },
     },
     // Delete a task
@@ -146,7 +128,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
-        return Task.findByIdAndRemove(args.id);
+        return taskResolver.findByIdAndRemove(args.id);
       },
     },
     // Update a task
@@ -169,17 +151,14 @@ const mutation = new GraphQLObjectType({
         userId: { type: GraphQLID },
       },
       resolve(parent, args) {
-        return Task.findByIdAndUpdate(
+        return taskResolver.findByIdAndUpdate(
           args.id,
           {
-            $set: {
-              title: args.name,
-              description: args.description,
-              status: args.status,
-              userId: args.userId,
-            },
-          },
-          { new: true }
+            title: args.title,
+            description: args.description,
+            status: args.status,
+            userId: args.userId,
+          }
         );
       },
     },

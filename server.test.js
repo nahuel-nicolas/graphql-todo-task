@@ -1,13 +1,14 @@
 const express = require('express');
 const request = require('supertest');
-// const colors = require('colors');
 const cors = require('cors');
-// require('dotenv').config();
 const { graphqlHTTP } = require('express-graphql');
-const schema = require('./schema/schema');
+const schema = require('./schema');
 // const connectDB = require('./db/db');
+// connectDB();
 const { tasks, users } = require('./sampleData');
-const Task = require('./models/Task')
+// const Task = require('./models/Task')
+const { taskResolver, userResolver } = require('./resolvers')
+const { mockTaskResolver, mockUserResolver } = require('./utils/testing/resolvers')
 // const User = require('./models/User')
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 
@@ -15,9 +16,6 @@ import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 const port = process.env.TEST_PORT || 3001;
 
 const app = express();
-
-// Connect to database
-// connectDB();
 
 app.use(cors());
 
@@ -31,121 +29,56 @@ app.use(
 
 const appProcess = app.listen(port, console.log(`Server running on port ${port}`));
 
-class MockMongooseModel {
-  constructor(mockData) {
-    // mockData is array[object]
-    this.mockData = structuredClone(mockData);
-  }
+function setupResolverMocks() {
+  vi.spyOn(taskResolver, 'find').mockImplementation(params => mockTaskResolver.find(params))
+  vi.spyOn(taskResolver, 'findById').mockImplementation(id => mockTaskResolver.findById(id))
+  vi.spyOn(taskResolver, 'findByIdAndRemove').mockImplementation(id => mockTaskResolver.findByIdAndRemove(id))
+  vi.spyOn(taskResolver, 'findByIdAndUpdate').mockImplementation(id => mockTaskResolver.findByIdAndUpdate(id))
+  vi.spyOn(taskResolver, 'create').mockImplementation(
+    (title, description, status, userId) => mockTaskResolver.create(title, description, status, userId)
+  )
 
-  find(searchParams) {
-    console.log('nba1')
-    if (!(searchParams)) {
-      return Promise.all(this.mockData);
-    }
-    const searchParamKey = Object.keys(searchParams)[0];
-    const searchParamValue = searchParams[searchParamKey];
-    return Promise.all([this.mockData.find(task => task[searchParamKey] === searchParamValue)])
-  }
-
-  findById(id) {
-    return Promise.all(this.mockData.find(mockObject => mockObject.id === id))
-  }
-
-  findByIdAndRemove(id) {
-    return Promise.all(this.mockData.filter(mockObject => mockObject.id !== id))
-  }
-
-  findByIdAndUpdate(id, setRawData, options) {
-    const setData = setRawData.$set;
-    for (let idx=0; idx<this.mockData.lenght; idx++) {
-      const mockObject = this.mockData[idx];
-      if (mockObject.id === id) {
-        for (const currentKey in setData) {
-          mockObject[currentKey] = setData[currentKey];
-          mockObject.updated = (new Date()).toISOString();
-        }
-        return Promise.all(mockObject) 
-      }
-    }
-  }
-
-  create(object) {
-    this.mockData.push(object)
-  }
+  vi.spyOn(userResolver, 'find').mockImplementation(params => mockUserResolver.find(params))
+  vi.spyOn(userResolver, 'findById').mockImplementation(id => mockUserResolver.findById(id))
+  vi.spyOn(userResolver, 'findByIdAndRemove').mockImplementation(id => mockUserResolver.findByIdAndRemove(id))
+  vi.spyOn(userResolver, 'findByIdAndUpdate').mockImplementation(id => mockUserResolver.findByIdAndUpdate(id))
+  vi.spyOn(userResolver, 'create').mockImplementation(
+    (username, password) => mockUserResolver.create(username, password)
+  )
 }
-
-const mockTask = new MockMongooseModel(tasks);
-const mockUser = new MockMongooseModel(users);
-
-function createTask(title, description, status, userId) {
-  const newTask = {
-    title,
-    description,
-    status,
-    userId,
-    created: (new Date()).toISOString(),
-    updated: (new Date()).toISOString(),
-  }
-  mockTask.create(newTask)
-}
-
-// vi.mock("./models/Task", async (importOriginal) => {
-//   const reactRouterDom = await importOriginal()
-//   const find = vi.fn(searchParam => {return mockTask.find(searchParam)})
-//   const findById = vi.fn(id => {return mockTask.findById(id)})
-//   const findByIdAndRemove = vi.fn(id => {return mockTask.findByIdAndRemove(id)})
-//   const findByIdAndUpdate = vi.fn(
-//     (id, setRawData, options) => {return mockTask.findByIdAndUpdate(id, setRawData, options)}
-//   )
-//   return {
-//       ...reactRouterDom,
-//       find,
-//       findById,
-//       findByIdAndRemove,
-//       findByIdAndUpdate
-//   }
-// })
-
-// vi.mock("./models/Task", () => {
-//   const find = vi.fn(searchParam => {return mockTask.find(searchParam)})
-//   const findById = vi.fn(id => {return mockTask.findById(id)})
-//   const findByIdAndRemove = vi.fn(id => {return mockTask.findByIdAndRemove(id)})
-//   const findByIdAndUpdate = vi.fn(
-//     (id, setRawData, options) => {return mockTask.findByIdAndUpdate(id, setRawData, options)}
-//   )
-//   return {
-//     find,
-//     findById,
-//     findByIdAndRemove,
-//     findByIdAndUpdate
-//   } 
-// })
-
-// const a = mockTask.find(null);
-
-vi.spyOn(Task, 'find').mockReturnValue(mockTask.find(null))
-// vi.spyOn(Task, 'constructor').mockReturnValue(createTask)
-
-// vi.mock("./models/Task", () => ({default: vi.fn(() => new MockMongooseModel(tasks))}))
-
-vi.mock("./models/User", () => ({default: new MockMongooseModel(users)}))
 
 describe('Test Server API', () => {
+  beforeAll(() => {
+    setupResolverMocks();
+  })
+
   afterAll(() => {
     vi.restoreAllMocks()
     appProcess.close()
   })
 
-  it('appProcess should not be null', () => {
-    expect(appProcess).toBeTruthy()
-  })
-
-  it('should return tasks', async () => {
-    // const Task = require('./models/Task')
-    const taskos = await Task.find().then(tasks => tasks)
-    expect(Task.find).toBeCalledTimes(1)
-    console.log(taskos)
-    expect(Array.isArray(taskos)).toBeTruthy()
+  describe('check if test is correctly setup', () => {
+    it('appProcess should not be null', () => {
+      expect(appProcess).toBeTruthy()
+    })
+  
+    it('should make mockTaskResolver return tasks', async () => {
+      const taskos = await taskResolver.find().then(tasks => tasks)
+      expect(taskResolver.find).toBeCalledTimes(1)
+      expect(Array.isArray(taskos)).toBeTruthy()
+    })
+  
+    it('shouldCreate new task with mockTaskResolver', () => {
+      const initTasksLength = mockTaskResolver.mockData.length
+      console.log(mockTaskResolver.mockData.length)
+      taskResolver.create(
+        'testMockTask', 
+        'testMockTaskDescription',
+        'In Progress',
+        null
+      )
+      expect(initTasksLength).toBeLessThan(mockTaskResolver.mockData.length)
+    })
   })
 
   it('should listen to http request', async () => {
@@ -173,4 +106,3 @@ describe('Test Server API', () => {
     expect(Array.isArray(response.body.data.tasks)).toBeTruthy()
   })
 })
-

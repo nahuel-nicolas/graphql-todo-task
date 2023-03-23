@@ -5,7 +5,7 @@ export default defineConfig({
     plugins: [react()],
     test: {
         environment: 'happy-dom',
-        exclude: ['./db/mongodata']
+        exclude: ['./db/mongodata', './node_modules']
     },
     // logLevel: true
 })
