@@ -1,5 +1,3 @@
-const Task = require('./models/Task');
-const User = require('./models/User');
 const { taskResolver, userResolver } = require('./resolvers')
 
 const {
@@ -22,9 +20,10 @@ const TaskType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parent, args) {
-        return userResolver.findById(parent.UserId);
+        return userResolver.findById(parent.userId);
       },
     },
+    status: { type: GraphQLString },
     created: { type: GraphQLString },
     updated: { type: GraphQLString },
   }),
@@ -65,7 +64,7 @@ const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
+      resolve: (parent, args) => {
         return userResolver.findById(args.id);
       },
     },

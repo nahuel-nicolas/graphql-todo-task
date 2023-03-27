@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  mongo-graphql:
+    image: mongo:4.2.21-bionic
+    container_name: mongo-graphql
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - ./db/mongodata:/data/db

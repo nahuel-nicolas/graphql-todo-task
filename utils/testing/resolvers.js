@@ -1,8 +1,7 @@
-const { tasks, users } = require('../../sampleData')
+const { tasks, users } = require('./sampleSavedData')
 
 class MockResolver {
     find(searchParams) {
-      console.log('nba1')
       if (!(searchParams)) {
         return Promise.all(this.mockData);
       }
@@ -11,8 +10,8 @@ class MockResolver {
       return Promise.all([this.mockData.find(task => task[searchParamKey] === searchParamValue)])
     }
   
-    findById(id) {
-      return Promise.all(this.mockData.find(mockObject => mockObject.id === id))
+    async findById(id) {
+      return await Promise.all([this.mockData.find(mockObject => mockObject.id === id)])
     }
   
     findByIdAndRemove(id) {
@@ -39,7 +38,7 @@ class MockResolver {
   }
   
   class MockTaskResolver extends MockResolver {
-    mockData = tasks
+    mockData = structuredClone(tasks);
   
     create(title, description, status, userId) {
       const currentISOString = (new Date()).toISOString();
@@ -61,7 +60,7 @@ class MockResolver {
   
   const mockTaskResolver = new MockTaskResolver();
   class MockUserResolver extends MockResolver {
-    mockData = users
+    mockData = structuredClone(users);
   
     create(user, password) {
       return super.create({

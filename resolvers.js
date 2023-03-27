@@ -2,25 +2,25 @@ const TaskModel = require('./models/Task')
 const UserModel = require('./models/User')
 
 class Resolver {
-    find(params) {
-        return this.model.find(params)
+    async find(params) {
+        return await this.model.find(params)
     }
 
-    findById(id) {
-        return this.model.findById(id)
+    async findById(id) {
+        return await this.model.findById(id)
     }
 
-    findByIdAndRemove(id) {
-        return this.model.findByIdAndRemove(id)
+    async findByIdAndRemove(id) {
+        return await this.model.findByIdAndRemove(id)
     }
 
-    create(params) {
+    async create(params) {
         const newElement = new this.model(params)
-        return newElement.save()
+        return await newElement.save()
     }
 
-    findByIdAndUpdate(id, params) {
-        return this.model.findByIdAndUpdate(
+    async findByIdAndUpdate(id, params) {
+        return await this.model.findByIdAndUpdate(
             id,
             {
               $set: params,
@@ -33,9 +33,9 @@ class Resolver {
 class TaskResolverClass extends Resolver {
     model = TaskModel;
 
-    create(title, description, status, userId) {
+    async create(title, description, status, userId) {
         const currentISOString = (new Date()).toISOString();
-        return super.create({
+        return await super.create({
             title,
             description,
             status,
@@ -45,27 +45,27 @@ class TaskResolverClass extends Resolver {
         })
     }
 
-    findByIdAndUpdate(id, params) {
+    async findByIdAndUpdate(id, params) {
         params.updated = (new Date()).toISOString();
-        return super.findByIdAndUpdate(id, params)
+        return await super.findByIdAndUpdate(id, params)
     }
 }
 
 class UserResolverClass extends Resolver {
     model = UserModel;
 
-    create(username, password) {
-        return super.create({ username, password })
+    async create(username, password) {
+        return await super.create({ username, password })
     }
 
-    findByIdAndRemove(id) {
-        Task.find({ userId: id }).then((tasks) => {
+    async findByIdAndRemove(id) {
+        await TaskModel.find({ userId: id }).then((tasks) => {
             tasks.forEach((task) => {
                 task.userId = null;
                 task.save()
             });
         });
-        return super.findByIdAndRemove(id)
+        return await super.findByIdAndRemove(id)
     }
 }
 
