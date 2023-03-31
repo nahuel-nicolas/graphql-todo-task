@@ -2,7 +2,7 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 
 import * as TaskService from '../services/TaskService';
-import AddTaskForm from './AddTaskForm';
+import AddTaskModalForm from './AddTaskModalForm';
 
 
 const statusOptionsExample = [
@@ -37,7 +37,7 @@ async function addTaskRequestMock(argumentTaskData) {
     }
 }
 
-describe('Test addTaskForm', () => {
+describe('Test AddTaskModalForm', () => {
     beforeAll(() => {
         vi.spyOn(TaskService, 'addTaskRequest').mockImplementation(addTaskRequestMock)
     })
@@ -48,12 +48,15 @@ describe('Test addTaskForm', () => {
 
     it('should render', () => {
         render(
-            <AddTaskForm 
+            <AddTaskModalForm 
                 statusOptions={statusOptionsExample}
                 userOptions={userOptionsExample}
-                isOpenForm={param => param}
             />
         )
+    })
+
+    it('should open modal', () => {
+        screen.getByText('Add Task').click()
     })
 
     it('should set title', () => {
