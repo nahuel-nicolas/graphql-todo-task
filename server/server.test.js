@@ -121,7 +121,43 @@ describe('Implementation Test Server API', () => {
     expect(response.body.data).toHaveProperty('addTask')
     expect(response.body.data.addTask).toHaveProperty('id')
     savedTask = response.body.data.addTask
-    expect(savedUser.id).toBeTruthy()
+    expect(savedTask.id).toBeTruthy()
+  })
+
+  it('should add task with null userId', async () => {
+    const query = `mutation {
+      addTask(title: "testNoUserTask", description: "testNoUserTaskDescription", status: progress, userId: null) {
+        id,
+        title,
+        description,
+        status,
+        user {
+          id
+        }
+      }
+    }`;
+
+    const response = await request(app)
+      .post('/graphql')
+      .send({query})
+      .set('Accept', 'application/json')
+      .expect(200)
+      .then(res => res)
+      .catch(err => {
+        console.log(err)
+        return err
+      })
+    expect(typeof response === 'object').toBeTruthy()
+    // console.log(response)
+    expect(response).toHaveProperty('body')
+    expect(response.body).toBeTruthy()
+    expect(response.body).toHaveProperty('data')
+    expect(response.body.data).toHaveProperty('addTask')
+    expect(response.body.data.addTask).toHaveProperty('id')
+    const currentTask = response.body.data.addTask
+    expect(currentTask.id).toBeTruthy()
+    expect(currentTask.user).toBeNull()
+    // console.log(currentTask)
   })
 
   it('should find task by id', async () => {
