@@ -97,6 +97,24 @@ const mutation = new GraphQLObjectType({
         return userResolver.findByIdAndRemove(args.id);
       },
     },
+    // Update a user
+    updateUser: {
+      type: UserType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        username: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return userResolver.findByIdAndUpdate(
+          args.id,
+          {
+            username: args.username,
+            password: args.password
+          }
+        );
+      },
+    },
     // Add a task
     addTask: {
       type: TaskType,
@@ -114,7 +132,7 @@ const mutation = new GraphQLObjectType({
           }),
           defaultValue: 'Not Started',
         },
-        userId: { type: GraphQLID},
+        userId: { type: GraphQLID },
       },
       resolve(parent, args) {
         return taskResolver.create(args.title, args.description, args.status, args.userId);
