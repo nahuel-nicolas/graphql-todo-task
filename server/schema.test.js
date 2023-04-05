@@ -83,11 +83,20 @@ describe('Test Schema', () => {
       tester.test(false, invalidStatusMutation)
 
       const mutation = `mutation {
-        addTask(title: "taskTitle", description: "taskDescripton", status: "progress", userId: "1") {
+        addTask(title: "taskTitle", description: "taskDescripton", status: progress, userId: "1") {
           id
         }
       }`;
-      tester.test(false, mutation)
+      tester.test(true, mutation)
+    })
+
+    it('addTask without user', () => {
+      const mutation = `mutation {
+        addTask(title: "taskTitle", description: "taskDescripton", status: progress, userId: null) {
+          id
+        }
+      }`;
+      tester.test(true, mutation)
     })
 
     it('deleteTask', () => {

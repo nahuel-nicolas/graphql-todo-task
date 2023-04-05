@@ -79,8 +79,7 @@ describe('test models with test database', () => {
     it('should be able to set foreing key to null', async () => {
         expect(savedTask.userId).toBeTruthy()
         savedTask.userId = null
-        await savedTask.save()
-        savedTask = await taskResolver.findById(savedTask.id)
+        savedTask = await savedTask.save()
         expect(savedTask.userId).toBeNull()
     })
 })
