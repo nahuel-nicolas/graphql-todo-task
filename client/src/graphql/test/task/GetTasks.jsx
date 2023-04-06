@@ -3,6 +3,10 @@ import { useQuery } from '@apollo/client';
 import { GET_TASKS } from "../../queries/taskQueries";
 
 
+// if you wanna acces specific task then query like
+// const { loading, error, data } = useQuery(GET_TASK, { variables: { id: 'taskId123' } });
+// task = data.task
+
 export default function GetTasks() {
     const { loading, error, data } = useQuery(GET_TASKS);
   

@@ -3,6 +3,10 @@ import { useQuery } from '@apollo/client';
 import { GET_USERS } from "../../queries/userQueries";
 
 
+// if you wanna acces specific user then query like
+// const { loading, error, data } = useQuery(GET_USER, { variables: { id: 'userId123' } });
+// user = data.user
+
 export default function GetUsers() {
     const { loading, error, data } = useQuery(GET_USERS);
   
