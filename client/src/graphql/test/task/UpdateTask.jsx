@@ -32,7 +32,7 @@ export default function UpdateTask({ addTaskData, updateTaskData }) {
     }, [taskToUpdate])
   
     const updateTaskHelper = async () => {
-      console.log(['updateTaskHelper', { ...updateTaskData, id: taskToUpdate.id }])
+      console.log(['UpdateTask.updateTaskHelper()', { ...updateTaskData, id: taskToUpdate.id }])
   
       return await updateTask(
         taskToUpdate.id,

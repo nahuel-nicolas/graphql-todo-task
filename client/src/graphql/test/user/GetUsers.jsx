@@ -5,13 +5,13 @@ import { GET_USERS } from "../../queries/userQueries";
 
 export default function GetUsers() {
     const { loading, error, data } = useQuery(GET_USERS);
-    console.log(data)
   
     if (loading) return <p>Loading...</p>;
     if (error) {
       console.error(error)
       return <p>Something Went Wrong</p>;
     }
+    console.log(['GetUsers.data', { data }])
   
     return (
       <>

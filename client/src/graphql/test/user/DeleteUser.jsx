@@ -27,7 +27,7 @@ export default function DeleteUser({ deleteUserData }) {
     }, [userToDelete])
   
     const deleteUserHelper = async () => {
-      console.log(['deleteUserHelper', userToDelete])
+      console.log(['DeleteUser.deleteUserHelper()', { userToDelete }])
       return await deleteUser(userToDelete.id)
     }
   

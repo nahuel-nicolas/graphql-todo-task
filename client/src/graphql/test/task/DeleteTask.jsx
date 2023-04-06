@@ -26,7 +26,10 @@ export default function DeleteTask({ deleteTaskData }) {
   }, [taskToDelete])
 
   const deleteTaskHelper = async () => {
-    console.log(['deleteTaskHelper', taskToDelete])
+    console.log(['DeleteTask.deleteTaskHelper()', {
+      taskToDeleteId: taskToDelete.id,
+      taskToDeleteTitle: taskToDelete.title
+    }])
     return await deleteTask(taskToDelete.id)
   }
 

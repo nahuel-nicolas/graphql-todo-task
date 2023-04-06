@@ -31,7 +31,7 @@ export default function UpdateUser({ addUserData, updateUserData }) {
   
     const updateUserHelper = async () => {
       console.log([
-        'updateUserHelper', 
+        'UpdateUser.updateUserHelper()', 
         { 
           id: userToUpdate.id, 
           username: updateUserData.username,

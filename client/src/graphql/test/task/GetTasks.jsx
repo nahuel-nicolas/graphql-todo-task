@@ -5,13 +5,13 @@ import { GET_TASKS } from "../../queries/taskQueries";
 
 export default function GetTasks() {
     const { loading, error, data } = useQuery(GET_TASKS);
-    console.log(data)
   
     if (loading) return <p>Loading...</p>;
     if (error) {
       console.error(error)
       return <p>Something Went Wrong</p>;
     }
+    console.log(['GetTasks.data', { data }])
   
     return (
       <>
