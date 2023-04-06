@@ -1,9 +1,36 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it } from 'vitest'
-import { MemoryRouter } from 'react-router-dom'
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, it, vi, beforeAll, afterAll } from 'vitest'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import * as apolloClient from '@apollo/client';
 
 import TaskList from "./TaskList";
 
+
+const { ApolloProvider, ApolloClient, InMemoryCache } = apolloClient
+
+const cache = new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          clients: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+          projects: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+});
+
+const client = new ApolloClient({
+    uri: 'http://localhost:3002/graphql',
+    cache
+});
 
 const tasks = [
     {
@@ -33,20 +60,50 @@ const tasks = [
     }
 ]
 
+function useQueryMock(query) {
+    return {
+        error: null,
+        loading: false,
+        data: {
+            tasks
+        }
+    }
+}
+
 describe('test TaskList', () => {
+    beforeAll(() => {
+        vi.spyOn(apolloClient, 'useQuery').mockImplementation(useQueryMock)
+    })
+
+    afterAll(() => {
+        vi.restoreAllMocks();
+    })
+
     it('should render TaskList', () => {
-        render(<TaskList tasks={tasks} />, { wrapper: MemoryRouter })
+        const ProvidedTaskList = (
+            <ApolloProvider client={client}>
+                <Routes>
+                    <Route path='/' element={<TaskList tasks={tasks} />} />
+                </Routes>
+            </ApolloProvider>
+        )
+        render(ProvidedTaskList, { wrapper: MemoryRouter })
     })
 
-    it('should find first 4 id digits', () => {
-        tasks.forEach(task => screen.getByText(task.id.slice(0, 4)))
-    })
-
-    it('should find title', () => {
-        tasks.forEach(task => screen.getByText(task.title))
-    })
-
-    it('should find status', () => {
-        tasks.forEach(task => screen.getByText('Status: ' + task.status))
+    it('should wait for apolloData', async () => {
+        await waitFor(() => {
+            it('should find first 4 id digits', () => {
+                tasks.forEach(task => screen.getByText(task.id.slice(0, 4)))
+            })
+        
+            it('should find title', () => {
+                tasks.forEach(task => screen.getByText(task.title))
+            })
+        
+            it('should find status', () => {
+                tasks.forEach(task => screen.getByText('Status: ' + task.status))
+            })
+            
+        })
     })
 })

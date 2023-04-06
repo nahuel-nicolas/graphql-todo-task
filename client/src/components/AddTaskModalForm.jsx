@@ -1,36 +1,80 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import { Modal, Select, Form, Button } from 'semantic-ui-react';
 
-import { addTaskRequest } from "../services/TaskService";
+import { ADD_TASK } from '../graphql/mutations/taskMutations';
+import { GET_TASKS } from '../graphql/queries/taskQueries';
+import { GET_USERS } from '../graphql/queries/userQueries';
+import { getOptionsFromApolloUseQueryResponse } from '../utils/utils';
+import { statusOptions } from '../utils/options';
 
 
-function AddTaskModalForm({ statusOptions, userOptions }) {
-    const [taskData, setTaskData] = useState({
+function AddTaskModalForm() {
+    const [userOptions, setUserOptions] = useState([{ value: '', text: 'unassigned'}])
+    const [task, setTaskData] = useState({
         title: '',
         description: '',
         status: '',
         userId: ''
     })
     const [open, setOpen] = useState(false)
+    const getUsersResponse = useQuery(GET_USERS);
+    const [addTask] = useMutation(ADD_TASK, {
+        variables: {
+          title: task.title,
+          description: task.description,
+          status: task.status,
+          userId: task.userId
+        },
+        update(cache, { data: { addTask } }) {
+          const cacheData = cache.readQuery({ query: GET_TASKS });
+          const tasks = cacheData?.tasks;
+          if (tasks) {
+            cache.writeQuery({
+              query: GET_TASKS,
+              data: { tasks: [...tasks, addTask] },
+            });
+          }
+        },
+    });
+
+    useEffect(() => {
+        if (!(getUsersResponse.loading || getUsersResponse.error)) {
+            if (getUsersResponse.data) {
+                setUserOptions([
+                    ...userOptions,
+                    ...getOptionsFromApolloUseQueryResponse(getUsersResponse.data.users, 'id', 'username')
+                ])
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        console.log([
+            'AddTaskModalForm.useEffect[userOptions]', 
+            userOptions,
+            getUsersResponse.data.users
+        ])
+    }, [userOptions])
 
     const handleChange = event => {
         setTaskData({
-            ...taskData,
+            ...task,
             [event.target.name]: event.target.value
         });
     };
     
     const handleSelectChange = (event, props) => {
         setTaskData({
-            ...taskData,
+            ...task,
             [props.name]: props.value
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
 
-        await addTaskRequest(taskData)
+        addTask(task.title, task.description, task.status, task.userId)
 
         setTaskData({
             title: '',
@@ -52,6 +96,12 @@ function AddTaskModalForm({ statusOptions, userOptions }) {
         setOpen(false)
     }
 
+    if (getUsersResponse.loading) return <p>Loading...</p>;
+    if (getUsersResponse.error) {
+        console.error(getUsersResponse.error)
+        return <p>Something Went Wrong</p>;
+    }
+
     return (
         <Modal
             onClose={() => setOpen(false)}
@@ -66,14 +116,14 @@ function AddTaskModalForm({ statusOptions, userOptions }) {
                         label='title' 
                         name='title'
                         role='add-task-title-input' 
-                        value={taskData.title} 
+                        value={task.title} 
                         onChange={handleChange} 
                     />
                     <Form.TextArea 
                         label='descripton' 
                         name='description'
                         role='add-task-description-textarea'   
-                        value={taskData.description}
+                        value={task.description}
                         onChange={handleChange} 
                     />
                     <Select
@@ -82,7 +132,7 @@ function AddTaskModalForm({ statusOptions, userOptions }) {
                         name='status'
                         data-testid='add-task-status-select'  
                         options={statusOptions} 
-                        value={taskData.status}
+                        value={task.status}
                         onChange={handleSelectChange} 
                     />
                     <Select 
@@ -90,7 +140,7 @@ function AddTaskModalForm({ statusOptions, userOptions }) {
                         name='userId'
                         data-testid='add-task-userid-select'  
                         options={userOptions} 
-                        value={taskData.userId}
+                        value={task.userId}
                         onChange={handleSelectChange} 
                     />
                     <Button type='submit' onClick={handleSubmit} role='submit-button'>Submit</Button>

@@ -1,9 +1,36 @@
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import * as apolloClient from '@apollo/client';
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
-import * as TaskService from '../services/TaskService';
 import AddTaskModalForm from './AddTaskModalForm';
 
+
+const { ApolloProvider, ApolloClient, InMemoryCache } = apolloClient
+
+const cache = new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          clients: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+          projects: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+});
+
+const client = new ApolloClient({
+    uri: 'http://localhost:3002/graphql',
+    cache
+});
 
 const statusOptionsExample = [
     { value: "new", text: "Not Started" },
@@ -27,19 +54,43 @@ const taskData = {
 const expectedSelectedStatusText = statusOptionsExample.find(option => option.value === taskData.status).text;
 const expectedSelectedUsername = userOptionsExample.find(option => option.value === taskData.userId).text;
 
-async function addTaskRequestMock(argumentTaskData) {
-    expect(argumentTaskData).toEqual(taskData)
+function useQueryMock(query) {
     return {
-        title: argumentTaskData.title,
-        description: argumentTaskData.description,
-        status: argumentTaskData.status,
-        userId: argumentTaskData.userId
+        loading: false,
+        error: null,
+        data: {
+            users: [
+                {
+                    id: "userid123",
+                    username: "username1"
+                },
+                {
+                    id: "3242",
+                    username: "username2"
+                }
+            ]
+        }
     }
+}
+
+function useMutationMock(mutation) {
+    return [
+        async (title, description, status, userId) => {
+            const requestDataTask = { title, description, status, userId }
+            console.log(['useMutationMock', requestDataTask])
+            expect(requestDataTask).toEqual(taskData)
+            return {
+                ...requestDataTask,
+                id: '123'
+            }
+        }
+    ]
 }
 
 describe('Test AddTaskModalForm', () => {
     beforeAll(() => {
-        vi.spyOn(TaskService, 'addTaskRequest').mockImplementation(addTaskRequestMock)
+        vi.spyOn(apolloClient, 'useQuery').mockImplementation(useQueryMock)
+        vi.spyOn(apolloClient, 'useMutation').mockImplementation(useMutationMock)
     })
 
     afterAll(() => {
@@ -47,12 +98,16 @@ describe('Test AddTaskModalForm', () => {
     })
 
     it('should render', () => {
-        render(
-            <AddTaskModalForm 
-                statusOptions={statusOptionsExample}
-                userOptions={userOptionsExample}
-            />
+        const ProvidedAddTaskModalForm = (
+            <ApolloProvider client={client}>
+                <Routes>
+                    <Route path='/' element={
+                        <AddTaskModalForm />
+                    } />
+                </Routes>
+            </ApolloProvider>
         )
+        render(ProvidedAddTaskModalForm, { wrapper: MemoryRouter })
     })
 
     it('should open modal', () => {
