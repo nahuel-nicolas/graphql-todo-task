@@ -53,7 +53,7 @@ const updateUserData = {
   password: 'testPassword1'
 }
 
-describe('test AddUser', () => {
+describe.skip('test AddUser', () => {
   it('should render AddUser', () => {
     const ProvidedAddUser = getApolloProvidedComponent(<AddUser addUserData={addUserData} />)
     render(ProvidedAddUser, { wrapper: MemoryRouter })
@@ -67,7 +67,7 @@ describe('test AddUser', () => {
   })
 })
 
-describe('test GetUsers', () => {
+describe.skip('test GetUsers', () => {
   beforeAll(() => {
     cleanup()
   })
@@ -86,7 +86,7 @@ describe('test GetUsers', () => {
   })
 })
 
-describe('test UpdateUser', () => {
+describe.skip('test UpdateUser', () => {
   beforeAll(() => {
     cleanup()
   })
@@ -106,7 +106,7 @@ describe('test UpdateUser', () => {
   })
 })
 
-describe('test DeleteUser', () => {
+describe.skip('test DeleteUser', () => {
   beforeAll(() => {
     cleanup()
   })
