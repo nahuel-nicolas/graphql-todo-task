@@ -49,7 +49,7 @@ describe('test AddUser', () => {
       <ApolloProvider client={client}>
           <Routes>
               <Route path='/' element={
-                <AddUser />
+                <AddUser addUserData={addUserData} />
               } />
           </Routes>
       </ApolloProvider>
@@ -59,11 +59,7 @@ describe('test AddUser', () => {
 
   it('should wait for apolloData and add user', async () => {
     await waitFor(() => {
-      const usernameInput = screen.getByRole('username-input')
-      const passwordInput = screen.getByRole('password-input')
       const submitButton = screen.getByRole('submit-button')
-      fireEvent.change(usernameInput, { target: { value: addUserData.username } })
-      fireEvent.change(passwordInput, { target: { value: addUserData.password } })
       submitButton.click() 
     })
   })

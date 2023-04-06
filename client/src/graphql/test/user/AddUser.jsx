@@ -5,10 +5,10 @@ import { ADD_USER } from "../../mutations/userMutations";
 import { GET_USERS } from "../../queries/userQueries";
 
 
-export default function AddUser() {
+export default function AddUser({ addUserData }) {
     const [user, setUser] = useState({
-      username: '',
-      password: ''
+      username: addUserData.username,
+      password: addUserData.password
     })
   
     const [addUser] = useMutation(ADD_USER, {
@@ -39,19 +39,8 @@ export default function AddUser() {
   
     return (
       <>
-        <input 
-          role="username-input" 
-          type="text" name="username" 
-          value={user.username} 
-          onChange={handleChange} 
-        />
-        <input 
-          role="password-input" 
-          type="text" 
-          name="password" 
-          value={user.password} 
-          onChange={handleChange} 
-        />
+        <p>{user.username}</p>
+        <p>{user.password}</p>
         <button role="submit-button" onClick={handleSubmit}>Add User</button>
       </>
     )
