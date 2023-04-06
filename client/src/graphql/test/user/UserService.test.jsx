@@ -33,6 +33,16 @@ const client = new ApolloClient({
     cache    
 });
 
+function getApolloProvidedComponent(component) {
+  return (
+      <ApolloProvider client={client}>
+          <Routes>
+              <Route path='/' element={component} />
+          </Routes>
+      </ApolloProvider>
+  )
+}
+
 const addUserData = {
   username: 'testUsername1',
   password: 'testPassword1'
@@ -45,15 +55,7 @@ const updateUserData = {
 
 describe('test AddUser', () => {
   it('should render AddUser', () => {
-    const ProvidedAddUser = (
-      <ApolloProvider client={client}>
-          <Routes>
-              <Route path='/' element={
-                <AddUser addUserData={addUserData} />
-              } />
-          </Routes>
-      </ApolloProvider>
-    )
+    const ProvidedAddUser = getApolloProvidedComponent(<AddUser addUserData={addUserData} />)
     render(ProvidedAddUser, { wrapper: MemoryRouter })
   })
 
@@ -71,15 +73,7 @@ describe('test GetUsers', () => {
   })
 
   it('should render GetUsers', () => {
-    const ProvidedGetUsers = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <GetUsers />
-                } />
-            </Routes>
-        </ApolloProvider>
-    )
+    const ProvidedGetUsers = getApolloProvidedComponent(<GetUsers />)
     render(ProvidedGetUsers, { wrapper: MemoryRouter })
   })
 
@@ -98,15 +92,8 @@ describe('test UpdateUser', () => {
   })
 
   it('should render UpdateUser', () => {
-
-    const ProvidedUpdateUser = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <UpdateUser addUserData={addUserData} updateUserData={updateUserData} />
-                } />
-            </Routes>
-        </ApolloProvider>
+    const ProvidedUpdateUser = getApolloProvidedComponent(
+      <UpdateUser addUserData={addUserData} updateUserData={updateUserData} />
     )
     render(ProvidedUpdateUser, { wrapper: MemoryRouter })
   })
@@ -125,15 +112,7 @@ describe('test DeleteUser', () => {
   })
 
   it('should render DeleteUser', () => {
-    const ProvidedDeleteUser = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <DeleteUser deleteUserData={updateUserData} />
-                } />
-            </Routes>
-        </ApolloProvider>
-    )
+    const ProvidedDeleteUser = getApolloProvidedComponent(<DeleteUser deleteUserData={updateUserData} />)
     render(ProvidedDeleteUser, { wrapper: MemoryRouter })
   })
 

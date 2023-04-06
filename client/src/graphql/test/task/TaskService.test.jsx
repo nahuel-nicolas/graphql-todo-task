@@ -35,6 +35,16 @@ const client = new ApolloClient({
     cache    
 });
 
+function getApolloProvidedComponent(component) {
+  return (
+      <ApolloProvider client={client}>
+          <Routes>
+              <Route path='/' element={component} />
+          </Routes>
+      </ApolloProvider>
+  )
+}
+
 const addTaskData = {
   title: 'testAddTask',
   description: 'testAddTaskDescription',
@@ -51,15 +61,7 @@ const updateTaskData = {
 
 describe('test AddTask', () => {
   it('should render AddTask', () => {
-    const ProvidedAddTask = (
-      <ApolloProvider client={client}>
-          <Routes>
-              <Route path='/' element={
-                <AddTask taskData={addTaskData} />
-              } />
-          </Routes>
-      </ApolloProvider>
-    )
+    const ProvidedAddTask = getApolloProvidedComponent(<AddTask taskData={addTaskData} />)
     render(ProvidedAddTask, { wrapper: MemoryRouter })
   })
 
@@ -78,15 +80,7 @@ describe('test GetTasks', () => {
   })
 
   it('should render GetTasks', () => {
-    const ProvidedGetTasks = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <GetTasks />
-                } />
-            </Routes>
-        </ApolloProvider>
-    )
+    const ProvidedGetTasks = getApolloProvidedComponent(<GetTasks />)
     render(ProvidedGetTasks, { wrapper: MemoryRouter })
   })
 
@@ -104,14 +98,8 @@ describe('test UpdateTask', () => {
   })
 
   it('should render UpdateTask', () => {
-    const ProvidedUpdateTask = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <UpdateTask addTaskData={addTaskData} updateTaskData={updateTaskData} />
-                } />
-            </Routes>
-        </ApolloProvider>
+    const ProvidedUpdateTask = getApolloProvidedComponent(
+      <UpdateTask addTaskData={addTaskData} updateTaskData={updateTaskData} />
     )
     render(ProvidedUpdateTask, { wrapper: MemoryRouter })
   })
@@ -130,15 +118,7 @@ describe('test DeleteTask', () => {
   })
 
   it('should render DeleteTask', () => {
-    const ProvidedDeleteTask = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <DeleteTask deleteTaskData={updateTaskData} />
-                } />
-            </Routes>
-        </ApolloProvider>
-    )
+    const ProvidedDeleteTask = getApolloProvidedComponent(<DeleteTask deleteTaskData={updateTaskData} />)
     render(ProvidedDeleteTask, { wrapper: MemoryRouter })
   })
 
@@ -168,15 +148,7 @@ describe('test AddTask with user', () => {
   })
 
   it('should render AddUser', () => {
-    const ProvidedAddUser = (
-      <ApolloProvider client={client}>
-          <Routes>
-              <Route path='/' element={
-                <AddUser addUserData={addUserData} />
-              } />
-          </Routes>
-      </ApolloProvider>
-    )
+    const ProvidedAddUser = getApolloProvidedComponent(<AddUser addUserData={addUserData} />)
     render(ProvidedAddUser, { wrapper: MemoryRouter })
   })
 
@@ -189,14 +161,8 @@ describe('test AddTask with user', () => {
 
   it('should render AddTask', () => {
     cleanup()
-    const ProvidedAddTask = (
-      <ApolloProvider client={client}>
-          <Routes>
-              <Route path='/' element={
-                <AddTask taskData={addTaskWithUser} userData={addUserData} />
-              } />
-          </Routes>
-      </ApolloProvider>
+    const ProvidedAddTask = getApolloProvidedComponent(
+      <AddTask taskData={addTaskWithUser} userData={addUserData} />
     )
     render(ProvidedAddTask, { wrapper: MemoryRouter })
   })
@@ -210,15 +176,7 @@ describe('test AddTask with user', () => {
 
   it('should render DeleteTask', () => {
     cleanup()
-    const ProvidedDeleteTask = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <DeleteTask deleteTaskData={addTaskWithUser} />
-                } />
-            </Routes>
-        </ApolloProvider>
-    )
+    const ProvidedDeleteTask = getApolloProvidedComponent(<DeleteTask deleteTaskData={addTaskWithUser} />)
     render(ProvidedDeleteTask, { wrapper: MemoryRouter })
   })
 
@@ -231,15 +189,7 @@ describe('test AddTask with user', () => {
 
   it('should render DeleteUser', () => {
     cleanup()
-    const ProvidedDeleteUser = (
-        <ApolloProvider client={client}>
-            <Routes>
-                <Route path='/' element={
-                  <DeleteUser deleteUserData={addUserData} />
-                } />
-            </Routes>
-        </ApolloProvider>
-    )
+    const ProvidedDeleteUser = getApolloProvidedComponent(<DeleteUser deleteUserData={addUserData} />)
     render(ProvidedDeleteUser, { wrapper: MemoryRouter })
   })
 
