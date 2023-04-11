@@ -2,11 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema');
-const connectDB = require('./db/db');
+const connectDB = require('./db');
 
 
 connectDB();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3002;
 
 const app = express();
 app.use(cors());

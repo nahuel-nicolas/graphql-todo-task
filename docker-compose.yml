@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  mongo-graphql:
+    image: mongo:4.2.21-bionic
+    container_name: mongo-graphql
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - ./mongodata:/data/db
+  server-graphql-todo-tasks:
+    image: node:18.12.1-alpine3.15
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - ./server:/server
+    command: >
+      sh -c "cd /server &&
+            echo '>>> INSTALLING NODE MODULES <<<' &&
+            echo '' &&
+            npm i &&
+            echo '' &&
+            echo '>>> STARTING SERVICE <<<' &&
+            echo '' &&
+            npm start"
+    depends_on:
+      - mongo-graphql

@@ -3,23 +3,28 @@ const UserModel = require('./models/User')
 
 class Resolver {
     async find(params) {
+        console.log(['find', this.model.modelName, { params }])
         return await this.model.find(params)
     }
 
     async findById(id) {
+        console.log(['findById', this.model.modelName, { id }])
         return await this.model.findById(id)
     }
 
     async findByIdAndRemove(id) {
+        console.log(['findByIdAndRemove', this.model.modelName, { id }])
         return await this.model.findByIdAndRemove(id)
     }
 
     async create(params) {
+        console.log(['create', this.model.modelName, { params }])
         const newElement = new this.model(params)
         return await newElement.save()
     }
 
     async findByIdAndUpdate(id, params) {
+        console.log(['findByIdAndUpdate', this.model.modelName, {id, params}])
         return await this.model.findByIdAndUpdate(
             id,
             {
