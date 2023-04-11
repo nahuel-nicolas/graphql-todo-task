@@ -97,7 +97,7 @@ export default function EditTaskForm({ taskId }) {
         });
     };
 
-    const handleBack = async (e) => {
+    const handleBack = (e) => {
         e.preventDefault()
         navigateTo('/')
     }
@@ -114,7 +114,7 @@ export default function EditTaskForm({ taskId }) {
         )
     }
     
-    const handleDelete = async (e) => {
+    const handleDelete = (e) => {
         e.preventDefault()
         deleteTask(task.id) 
     }
