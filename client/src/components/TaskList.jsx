@@ -17,7 +17,7 @@ function TaskList() {
     console.log(['TaskList.data', { data }])
 
     return (
-        <div className="task-container">
+        <div className="task-list">
             {data.tasks.map((task, idx) => <TaskListItem taskData={task} key={idx} />)}
         </div>
     )
