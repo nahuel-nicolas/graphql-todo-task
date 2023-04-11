@@ -6,11 +6,11 @@ import { ADD_TASK } from '../graphql/mutations/taskMutations';
 import { GET_TASKS } from '../graphql/queries/taskQueries';
 import { GET_USERS } from '../graphql/queries/userQueries';
 import { getOptionsFromApolloUseQueryResponse } from '../utils/utils';
-import { statusOptions } from '../utils/options';
+import { statusOptions, initUserOptions } from '../utils/options';
 
 
 function AddTaskModalForm() {
-    const [userOptions, setUserOptions] = useState([{ value: '', text: 'unassigned'}])
+    const [userOptions, setUserOptions] = useState(initUserOptions)
     const [task, setTaskData] = useState({
         title: '',
         description: '',
