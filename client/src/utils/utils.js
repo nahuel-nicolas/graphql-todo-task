@@ -53,3 +53,9 @@ export function getQueryName(query) {
     // this works for gpl mutations and queries
     return query.definitions[0].name.value
 }
+
+export function capitalizeFirstLetter(string) {
+    // credit to 
+    // https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
