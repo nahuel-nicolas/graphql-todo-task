@@ -7,7 +7,7 @@ import { GET_TASK, GET_TASKS } from "../graphql/queries/taskQueries"
 import { GET_USERS } from "../graphql/queries/userQueries"
 import { UPDATE_TASK, DELETE_TASK } from "../graphql/mutations/taskMutations"
 import { statusOptions, initUserOptions } from "../utils/options"
-import { getOptionsFromApolloUseQueryResponse } from "../utils/utils"
+import { getOptionsFromApolloUseQueryResponse, getNewErrors } from "../utils/utils"
 
 
 export default function EditTaskForm({ taskId }) {
@@ -83,6 +83,12 @@ export default function EditTaskForm({ taskId }) {
         refetchQueries: [{ query: GET_TASK, variables: { id: task.id } }],
     });
 
+    const [errors, setErrors] = useState({
+        title: null,
+        status: null,
+        userId: null
+    })
+
     const handleChange = event => {
         setTask({
             ...task,
@@ -104,6 +110,12 @@ export default function EditTaskForm({ taskId }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        if (!task.title || !task.status || !task.userId) {
+            const newErrors = getNewErrors(errors, task, ['title', 'status', 'userId'])
+            setErrors(newErrors)
+            return null;
+        }
 
         updateTask(
             task.id, 
@@ -127,14 +139,17 @@ export default function EditTaskForm({ taskId }) {
 
     return (
         <Form>
-            <Form.Input 
+            <Form.Input
+                required 
                 label='title' 
                 name='title'
                 role='title-input' 
                 value={task.title} 
-                onChange={handleChange} 
+                onChange={handleChange}
+                error={errors.title}
             />
-            <Form.TextArea 
+            <Form.TextArea
+                required 
                 label='descripton' 
                 name='description'
                 role='description-textarea'   
@@ -142,21 +157,25 @@ export default function EditTaskForm({ taskId }) {
                 onChange={handleChange} 
             />
             <Select
+                required
                 label='Status' 
                 placeholder='Select task status' 
                 name='status'
                 data-testid='status-select'  
                 options={statusOptions} 
                 value={task.status}
-                onChange={handleSelectChange} 
+                onChange={handleSelectChange}
+                error={errors.status}
             />
-            <Select 
+            <Select
+                required 
                 placeholder='Assign a user' 
                 name='userId'
                 data-testid='user-select'  
                 options={userOptions} 
                 value={task.userId}
-                onChange={handleSelectChange} 
+                onChange={handleSelectChange}
+                error={errors.userId}
             />
             <Button type='submit' onClick={handleBack} role='back-button'>Back</Button>
             <Button type='submit' onClick={handleSubmit} role='submit-button'>Submit</Button>

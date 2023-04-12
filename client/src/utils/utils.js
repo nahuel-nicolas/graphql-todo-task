@@ -59,3 +59,17 @@ export function capitalizeFirstLetter(string) {
     // https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function getNewErrors(errors, inspectObject, requiredFields) {
+    const errorsCopy = structuredClone(errors)
+    for (const field of requiredFields) {
+        errorsCopy[field] = false
+        if (!inspectObject[field]) {
+            errorsCopy[field] = {
+                content: `Please enter a valid ${field}`,
+                pointing: 'below',
+            }
+        }
+    }
+    return errorsCopy
+}

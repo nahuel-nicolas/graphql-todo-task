@@ -5,7 +5,7 @@ import { Modal, Select, Form, Button } from 'semantic-ui-react';
 import { ADD_TASK } from '../graphql/mutations/taskMutations';
 import { GET_TASKS } from '../graphql/queries/taskQueries';
 import { GET_USERS } from '../graphql/queries/userQueries';
-import { getOptionsFromApolloUseQueryResponse } from '../utils/utils';
+import { getOptionsFromApolloUseQueryResponse, getNewErrors } from '../utils/utils';
 import { statusOptions, initUserOptions } from '../utils/options';
 
 
@@ -46,6 +46,12 @@ function AddTaskModalForm() {
         },
     });
 
+    const [errors, setErrors] = useState({
+        title: null,
+        status: null,
+        userId: null
+    })
+
     const handleChange = event => {
         setTaskData({
             ...task,
@@ -62,6 +68,12 @@ function AddTaskModalForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        if (!task.title || !task.status || !task.userId) {
+            const newErrors = getNewErrors(errors, task, ['title', 'status', 'userId'])
+            setErrors(newErrors)
+            return null;
+        }
 
         addTask(task.title, task.description, task.status, task.userId)
 
@@ -101,12 +113,14 @@ function AddTaskModalForm() {
             <Modal.Header>Add Task</Modal.Header>
             <Modal.Content>
                 <Form>
-                    <Form.Input 
+                    <Form.Input
+                        required 
                         label='title' 
                         name='title'
                         role='add-task-title-input' 
                         value={task.title} 
-                        onChange={handleChange} 
+                        onChange={handleChange}
+                        error={errors.title} 
                     />
                     <Form.TextArea 
                         label='descripton' 
@@ -116,21 +130,25 @@ function AddTaskModalForm() {
                         onChange={handleChange} 
                     />
                     <Select
+                        required
                         label='Status' 
                         placeholder='Select task status' 
                         name='status'
                         data-testid='add-task-status-select'  
                         options={statusOptions} 
                         value={task.status}
-                        onChange={handleSelectChange} 
+                        onChange={handleSelectChange}
+                        error={errors.status}
                     />
-                    <Select 
+                    <Select
+                        required 
                         placeholder='Assign a user' 
                         name='userId'
                         data-testid='add-task-userid-select'  
                         options={userOptions} 
                         value={task.userId}
-                        onChange={handleSelectChange} 
+                        onChange={handleSelectChange}
+                        error={errors.userId}
                     />
                     <Button type='submit' onClick={handleSubmit} role='submit-button'>Submit</Button>
                     <Button type='submit' onClick={handleClose} role='close-button'>Close</Button>
