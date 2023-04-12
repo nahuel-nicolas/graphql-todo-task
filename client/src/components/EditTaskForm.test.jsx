@@ -92,7 +92,7 @@ function useQueryMock(query, options) {
         setLoading(false)
     }, [])
     useEffect(() => {
-        options.onCompleted(data)
+        if (data) options.onCompleted(data)
     }, [data])
     
     return {

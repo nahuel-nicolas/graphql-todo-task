@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 import * as apolloClient from '@apollo/client';
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
 import AddTaskModalForm from './AddTaskModalForm';
+import { getQueryName } from "../utils/utils";
 
 
 const { ApolloProvider, ApolloClient, InMemoryCache } = apolloClient
@@ -54,11 +56,13 @@ const taskData = {
 const expectedSelectedStatusText = statusOptionsExample.find(option => option.value === taskData.status).text;
 const expectedSelectedUsername = userOptionsExample.find(option => option.value === taskData.userId).text;
 
-function useQueryMock(query) {
-    return {
-        loading: false,
-        error: null,
-        data: {
+function useQueryMock(query, options) {
+    const [data, setData] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    useEffect(() => {
+        expect(getQueryName(query)).toEqual('getUsers')
+        setData({ 
             users: [
                 {
                     id: "userid123",
@@ -68,8 +72,18 @@ function useQueryMock(query) {
                     id: "3242",
                     username: "username2"
                 }
-            ]
-        }
+            ] 
+        })
+        setLoading(false)
+    }, [])
+    useEffect(() => {
+        if (data) options.onCompleted(data)
+    }, [data])
+    
+    return {
+        loading,
+        error,
+        data
     }
 }
 
@@ -77,7 +91,7 @@ function useMutationMock(mutation) {
     return [
         async (title, description, status, userId) => {
             const requestDataTask = { title, description, status, userId }
-            console.log(['useMutationMock', requestDataTask])
+            console.log(['AddTaskModalForm.useMutationMock', requestDataTask])
             expect(requestDataTask).toEqual(taskData)
             return {
                 ...requestDataTask,

@@ -18,7 +18,15 @@ function AddTaskModalForm() {
         userId: ''
     })
     const [open, setOpen] = useState(false)
-    const getUsersResponse = useQuery(GET_USERS);
+    const onCompletedGetUsers = ({ users }) => {
+        setUserOptions([
+            ...userOptions,
+            ...getOptionsFromApolloUseQueryResponse(users, 'id', 'username')
+        ])
+    }
+    const { loading: usersLoading, error: usersError, data: usersData } = useQuery(
+        GET_USERS, { onCompleted: onCompletedGetUsers }
+    );
     const [addTask] = useMutation(ADD_TASK, {
         variables: {
           title: task.title,
@@ -37,25 +45,6 @@ function AddTaskModalForm() {
           }
         },
     });
-
-    useEffect(() => {
-        if (!(getUsersResponse.loading || getUsersResponse.error)) {
-            if (getUsersResponse.data) {
-                setUserOptions([
-                    ...userOptions,
-                    ...getOptionsFromApolloUseQueryResponse(getUsersResponse.data.users, 'id', 'username')
-                ])
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        console.log([
-            'AddTaskModalForm.useEffect[userOptions]', 
-            userOptions,
-            getUsersResponse.data.users
-        ])
-    }, [userOptions])
 
     const handleChange = event => {
         setTaskData({
@@ -96,9 +85,9 @@ function AddTaskModalForm() {
         setOpen(false)
     }
 
-    if (getUsersResponse.loading) return <p>Loading...</p>;
-    if (getUsersResponse.error) {
-        console.error(getUsersResponse.error)
+    if (usersLoading) return <p>Loading...</p>;
+    if (usersError) {
+        console.error(usersError)
         return <p>Something Went Wrong</p>;
     }
 
