@@ -18,7 +18,10 @@ export default function EditTaskForm({ taskId }) {
         title: '',
         description: '',
         status: '',
-        userId: ''
+        user: {
+            id: '',
+            username: ''
+        }
     })
 
     // as per https://github.com/apollographql/react-apollo/issues/4008 recomends using useCallback
@@ -78,15 +81,14 @@ export default function EditTaskForm({ taskId }) {
           title: task.title,
           description: task.description,
           status: task.status,
-          userId: task.userId
+          userId: task.user?.id
         },
         refetchQueries: [{ query: GET_TASK, variables: { id: task.id } }],
     });
 
     const [errors, setErrors] = useState({
         title: null,
-        status: null,
-        userId: null
+        status: null
     })
 
     const handleChange = event => {
@@ -103,6 +105,17 @@ export default function EditTaskForm({ taskId }) {
         });
     };
 
+    const handleUserIdSelectChange = (event, props) => {
+        console.log([props])
+        setTask({
+            ...task,
+            user: {
+                id: props.value,
+                username: props.options.find(option => option.value === props.value).text
+            }
+        });
+    };
+
     const handleBack = (e) => {
         e.preventDefault()
         navigateTo('/')
@@ -111,8 +124,8 @@ export default function EditTaskForm({ taskId }) {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        if (!task.title || !task.status || !task.userId) {
-            const newErrors = getNewErrors(errors, task, ['title', 'status', 'userId'])
+        if (!task.title || !task.status) {
+            const newErrors = getNewErrors(errors, task, ['title', 'status'])
             setErrors(newErrors)
             return null;
         }
@@ -122,7 +135,7 @@ export default function EditTaskForm({ taskId }) {
             task.title, 
             task.description, 
             task.status, 
-            task.userId
+            task.user?.id
         )
     }
     
@@ -173,9 +186,8 @@ export default function EditTaskForm({ taskId }) {
                 name='userId'
                 data-testid='user-select'  
                 options={userOptions} 
-                value={task.userId}
-                onChange={handleSelectChange}
-                error={errors.userId}
+                value={task.user?.id}
+                onChange={handleUserIdSelectChange}
             />
             <Button type='submit' onClick={handleBack} role='back-button'>Back</Button>
             <Button type='submit' onClick={handleSubmit} role='submit-button'>Submit</Button>

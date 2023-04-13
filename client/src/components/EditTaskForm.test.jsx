@@ -41,7 +41,10 @@ const initTaskData = {
     title: 'testEditTaskForm',
     description: 'test edit task form description',
     status: 'new',
-    userId: 'userId123'
+    user: {
+        id: 'userId123',
+        username: 'username1'
+    }
 }
 
 const finalTaskData = {
@@ -49,7 +52,10 @@ const finalTaskData = {
     title: 'testEditTaskForm Final',
     description: 'test edit task form description final',
     status: 'completed',
-    userId: 'userId456'
+    user: {
+        id: 'userId456',
+        username: 'username2'
+    }
 }
 
 const users = [
@@ -68,9 +74,9 @@ const users = [
 ]
 
 const initStatusText = statusOptions.find(statusOption => statusOption.value === initTaskData.status).text
-const initUsername = users.find(user => user.id === initTaskData.userId).username
+const initUsername = users.find(user => user.id === initTaskData.user.id).username
 const finalStatusText = statusOptions.find(statusOption => statusOption.value === finalTaskData.status).text
-const finalUsername = users.find(user => user.id === finalTaskData.userId).username
+const finalUsername = users.find(user => user.id === finalTaskData.user.id).username
 
 let goBackButtonClicked = false
 let submitButtonClicked = false
@@ -108,7 +114,16 @@ function useMutationMock(mutation) {
         return [
             async (id, title, description, status, userId) => {
                 submitButtonClicked = true
-                const requestDataTask = { id, title, description, status, userId }
+                const requestDataTask = { 
+                    id, 
+                    title, 
+                    description, 
+                    status, 
+                    user: { 
+                        ...finalTaskData.user,
+                        id: userId,
+                    } 
+                }
                 console.log(['EditTaskForm.useMutationMock.UpdateTask', requestDataTask])
                 expect(requestDataTask).toEqual(finalTaskData)
                 return requestDataTask
