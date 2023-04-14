@@ -1,4 +1,4 @@
-export const graphql_url = 'http://localhost:3002/graphql';
+export const graphql_url = 'http://localhost:3406/graphql';
 
 export const debug = true
 

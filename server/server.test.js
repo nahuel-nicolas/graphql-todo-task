@@ -9,7 +9,7 @@ const connectDB = require('./utils/testing/db');
 
 
 connectDB();
-const port = process.env.TEST_PORT || 3001;
+const port = process.env.TEST_PORT || 3405;
 
 const app = express();
 app.use(cors());

@@ -7,6 +7,7 @@ services:
     network_mode: "host"
     volumes:
       - ./mongodata:/data/db
+
   server-graphql-todo-tasks:
     image: node:18.12.1-alpine3.15
     network_mode: "host"
@@ -19,8 +20,26 @@ services:
             echo '' &&
             npm i &&
             echo '' &&
-            echo '>>> STARTING SERVICE <<<' &&
+            echo '>>> STARTING SERVER SERVICE ON PORT 3406 <<<' &&
             echo '' &&
             npm start"
     depends_on:
       - mongo-graphql
+
+  client-graphql-todo-tasks:
+    image: node:18.12.1-alpine3.15
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - ./client:/client
+    command: >
+      sh -c "cd /client &&
+            echo '>>> INSTALLING NODE MODULES <<<' &&
+            echo '' &&
+            npm i &&
+            echo '' &&
+            echo '>>> STARTING CLIENT SERVICE ON PORT 3407 <<<' &&
+            echo '' &&
+            npm start"
+    depends_on:
+      - server-graphql-todo-tasks
