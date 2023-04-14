@@ -41,7 +41,7 @@ const statusOptionsExample = [
 ]
 
 const userOptionsExample = [
-    { value: "", text: "unassigned" },
+    { value: null, text: "unassigned" },
     { value: "userid123", text: "username1" },
     { value: "3242", text: "username2" },
 ]

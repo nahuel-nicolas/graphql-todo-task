@@ -15,7 +15,7 @@ function AddTaskModalForm() {
         title: '',
         description: '',
         status: '',
-        userId: ''
+        userId: null
     })
     const [open, setOpen] = useState(false)
     const onCompletedGetUsers = ({ users }) => {
@@ -69,7 +69,7 @@ function AddTaskModalForm() {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        if (!task.title || !task.status || !task.userId) {
+        if (!task.title || !task.status) {
             const newErrors = getNewErrors(errors, task, ['title', 'status', 'userId'])
             setErrors(newErrors)
             return null;
@@ -148,7 +148,7 @@ function AddTaskModalForm() {
                         options={userOptions} 
                         value={task.userId}
                         onChange={handleSelectChange}
-                        error={errors.userId}
+                        // error={errors.userId}
                     />
                     <Button type='submit' onClick={handleSubmit} role='submit-button'>Submit</Button>
                     <Button type='submit' onClick={handleClose} role='close-button'>Close</Button>

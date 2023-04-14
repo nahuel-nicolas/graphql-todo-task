@@ -5,5 +5,5 @@ export const statusOptions = [
 ]
 
 export const initUserOptions = [
-    { value: '', text: 'unassigned' }
+    { value: null, text: 'unassigned' }
 ]
