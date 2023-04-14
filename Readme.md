@@ -3,10 +3,15 @@
 
 run
 
+# docker-compose up #
 
-docker-compose up
+then go to see server
 
+# http://localhost:3406/graphql #
 
+and client
+
+# http://localhost:3407 #
 
 
 docker services info:
