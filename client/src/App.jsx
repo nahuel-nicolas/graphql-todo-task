@@ -8,6 +8,7 @@ import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import './App.css';
 import Home from './pages/Home'
 import Task from "./pages/Task";
+import { graphql_url } from "./config";
 
 
 const cache = new InMemoryCache({
@@ -30,7 +31,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3002/graphql',
+  uri: graphql_url,
   cache
 });
 

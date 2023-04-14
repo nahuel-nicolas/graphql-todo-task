@@ -9,6 +9,7 @@ import UpdateTask from "./UpdateTask";
 import DeleteTask from "./DeleteTask";
 import AddUser from "../user/AddUser";
 import DeleteUser from "../user/DeleteUser";
+import { graphql_url } from "../../../config";
 
 
 const cache = new InMemoryCache({
@@ -31,7 +32,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-    uri: 'http://localhost:3002/graphql',
+    uri: graphql_url,
     cache    
 });
 

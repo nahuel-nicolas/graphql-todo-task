@@ -6,6 +6,7 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
 import AddTaskModalForm from './AddTaskModalForm';
 import { getQueryName, log } from "../utils/utils";
+import { graphql_url } from "../config";
 
 
 const { ApolloProvider, ApolloClient, InMemoryCache } = apolloClient
@@ -30,7 +31,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-    uri: 'http://localhost:3002/graphql',
+    uri: 'grapqhel_url',
     cache
 });
 

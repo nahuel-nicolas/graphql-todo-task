@@ -6,7 +6,7 @@ import * as ReactRouterDom from "react-router-dom";
 
 import EditTaskForm from "./EditTaskForm";
 import { statusOptions } from "../utils/options";
-import { statusOptions as statusKeyNames } from "../config";
+import { statusOptions as statusKeyNames, graphql_url } from "../config";
 import { getQueryName, log } from "../utils/utils";
 
 
@@ -33,7 +33,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-    uri: 'http://localhost:3002/graphql',
+    uri: graphql_url,
     cache
 });
 
