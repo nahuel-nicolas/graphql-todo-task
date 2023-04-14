@@ -73,3 +73,17 @@ export function getNewErrors(errors, inspectObject, requiredFields) {
     }
     return errorsCopy
 }
+
+export function getFirstDigits(string, digits) {
+    if (string.length <= digits) {
+        return string
+    }
+    return string.slice(0, digits)
+}
+
+export function getLastDigits(string, digits) {
+    if (string.length <= digits) {
+        return string
+    }
+    return string.slice(string.length - digits)
+}

@@ -4,7 +4,7 @@ import { capitalizeFirstLetter } from "../utils/utils";
 function Section({ children, name }) {
     return (
         <section className={name + 'section'}>
-            <h3>{capitalizeFirstLetter(name)}</h3>
+            <h2>{capitalizeFirstLetter(name) + 's'}</h2>
             {children}
         </section>
     )

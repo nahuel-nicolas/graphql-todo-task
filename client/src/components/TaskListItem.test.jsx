@@ -3,6 +3,7 @@ import { expect, describe, it, afterAll } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 
 import TaskListItem from "./TaskListItem";
+import { getLastDigits } from "../utils/utils";
 
 
 const taskData = {
@@ -33,7 +34,7 @@ describe('test TaskListItem', () => {
     })
 
     it('should find first 4 id digits', () => {
-        screen.getByText(taskData.id.slice(0, 4))
+        screen.getByText(getLastDigits(taskData.id, 4))
     })
 
     it('should find title', () => {
@@ -64,7 +65,7 @@ describe('test TaskListItem with null user', () => {
     })
 
     it('should find first 4 id digits', () => {
-        screen.getByText(taskData2.id.slice(0, 4))
+        screen.getByText(getLastDigits(taskData2.id, 4))
     })
 
     it('should find title', () => {

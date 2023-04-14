@@ -1,21 +1,20 @@
 import { Link } from 'react-router-dom'
+import { Button } from 'semantic-ui-react'
+
+import { getLastDigits } from '../utils/utils'
+
 
 function TaskListItem({ taskData }) {
-    function getFirstDigits(string, digits) {
-        if (string.length <= 4) {
-            return string
-        }
-        return string.slice(0, digits)
-    }
-
     return (
         <div className="task">
-            <h3>{getFirstDigits(taskData.id, 4)}</h3>
-            <p>{taskData.title}</p>
-            <p>Status: {taskData.status}</p>
-            <p>Assigned to: {taskData.user?.username}</p>
+            <h3>{getLastDigits(taskData.id, 4)}</h3>
+            <div className="data">
+                <p className='title'>{taskData.title}</p>
+                <p>Status: {taskData.status}</p>
+                <p>Assigned to: {taskData.user ? taskData.user.username : 'Unassigned' }</p>
+            </div>
             <Link to={`/task/${taskData.id}`}>
-                <button role="task-link">View</button>
+                <Button role="task-link">View</Button>
             </Link>
         </div>
     )

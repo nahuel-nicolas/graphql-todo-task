@@ -163,7 +163,7 @@ export default function EditTaskForm({ taskId }) {
         <Form>
             <Form.Input
                 required 
-                label='title' 
+                label='Title' 
                 name='title'
                 role='title-input' 
                 value={task.title} 
@@ -172,7 +172,7 @@ export default function EditTaskForm({ taskId }) {
             />
             <Form.TextArea
                 required 
-                label='descripton' 
+                label='Description' 
                 name='description'
                 role='description-textarea'   
                 value={task.description}
