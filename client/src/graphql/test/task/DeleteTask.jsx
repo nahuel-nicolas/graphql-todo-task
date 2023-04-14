@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { DELETE_TASK } from "../../mutations/taskMutations";
 import { GET_TASKS } from "../../queries/taskQueries";
+import { log } from '../../../utils/utils';
 
 
 export default function DeleteTask({ deleteTaskData }) {
@@ -26,7 +27,7 @@ export default function DeleteTask({ deleteTaskData }) {
   }, [taskToDelete])
 
   const deleteTaskHelper = async () => {
-    console.log(['DeleteTask.deleteTaskHelper()', {
+    log.debug(['DeleteTask.deleteTaskHelper()', {
       taskToDeleteId: taskToDelete.id,
       taskToDeleteTitle: taskToDelete.title
     }])

@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { GET_TASKS } from "../graphql/queries/taskQueries";
 
 import TaskListItem from "./TaskListItem"
+import { log } from '../utils/utils';
 
 
 function TaskList() {
@@ -14,7 +15,7 @@ function TaskList() {
         return <p>Something Went Wrong</p>;
     }
 
-    console.log(['TaskList.data', { data }])
+    log.debug(['TaskList.data', { data }])
 
     return (
         <div className="task-list">

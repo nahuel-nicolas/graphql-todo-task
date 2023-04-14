@@ -4,7 +4,7 @@ import * as apolloClient from '@apollo/client';
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
 import AddUserModalForm from './AddUserModalForm';
-import { getQueryName } from "../utils/utils";
+import { getQueryName, log } from "../utils/utils";
 
 
 const { ApolloProvider, ApolloClient, InMemoryCache } = apolloClient
@@ -46,7 +46,7 @@ function useMutationMock(mutation) {
         async (username, password) => {
             isSubmitButtonClicked = true
             const requestDataUser = { username, password }
-            console.log(['AddUserModalForm.useMutationMock', requestDataUser])
+            log.debug(['AddUserModalForm.useMutationMock', requestDataUser])
             expect(requestDataUser).toEqual(userData)
             return {
                 ...requestDataUser,

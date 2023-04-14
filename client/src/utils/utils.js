@@ -1,5 +1,19 @@
-import { statusOptions } from "../config";
+import { statusOptions, debug } from "../config";
 
+
+class Log {
+    debug(...params) {
+        if (debug) {
+            console.log(params)
+        }
+    }
+
+    info(...params) {
+        console.log(params)
+    }
+}
+
+export const log = new Log()
 
 export function jsonToOptionsSelectArray(rawJson) {
     // expect rawJson to be a json like

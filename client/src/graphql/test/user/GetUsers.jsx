@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 
 import { GET_USERS } from "../../queries/userQueries";
+import { log } from '../../../utils/utils';
 
 
 // if you wanna acces specific user then query like
@@ -15,7 +16,7 @@ export default function GetUsers() {
       console.error(error)
       return <p>Something Went Wrong</p>;
     }
-    console.log(['GetUsers.data', { data }])
+    log.debug(['GetUsers.data', { data }])
   
     return (
       <>

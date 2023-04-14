@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { UPDATE_TASK } from "../../mutations/taskMutations"
 import { GET_TASKS, GET_TASK } from "../../queries/taskQueries";
+import { log } from '../../../utils/utils';
 
 
 export default function UpdateTask({ addTaskData, updateTaskData }) {
@@ -32,7 +33,7 @@ export default function UpdateTask({ addTaskData, updateTaskData }) {
     }, [taskToUpdate])
   
     const updateTaskHelper = async () => {
-      console.log(['UpdateTask.updateTaskHelper()', { ...updateTaskData, id: taskToUpdate.id }])
+      log.debug(['UpdateTask.updateTaskHelper()', { ...updateTaskData, id: taskToUpdate.id }])
   
       return await updateTask(
         taskToUpdate.id,

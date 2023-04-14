@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { UPDATE_USER } from "../../mutations/userMutations";
 import { GET_USERS, GET_USER } from "../../queries/userQueries";
+import { log } from '../../../utils/utils';
 
 
 export default function UpdateUser({ addUserData, updateUserData }) {
@@ -30,7 +31,7 @@ export default function UpdateUser({ addUserData, updateUserData }) {
     }, [userToUpdate])
   
     const updateUserHelper = async () => {
-      console.log([
+      log.debug([
         'UpdateUser.updateUserHelper()', 
         { 
           id: userToUpdate.id, 

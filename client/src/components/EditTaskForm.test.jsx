@@ -7,7 +7,7 @@ import * as ReactRouterDom from "react-router-dom";
 import EditTaskForm from "./EditTaskForm";
 import { statusOptions } from "../utils/options";
 import { statusOptions as statusKeyNames } from "../config";
-import { getQueryName } from "../utils/utils";
+import { getQueryName, log } from "../utils/utils";
 
 
 const { ApolloProvider, ApolloClient, InMemoryCache } = apolloClient
@@ -89,7 +89,7 @@ function useQueryMock(query, options) {
     const [error, setError] = useState(null)
     useEffect(() => {
         const queryName = getQueryName(query)
-        console.log(['EditTaskForm.test.useQueryMock.useEffect[]', queryName])
+        log.debug(['EditTaskForm.test.useQueryMock.useEffect[]', queryName])
 
         if (queryName === 'getUsers') {
             setData({ users })
@@ -129,7 +129,7 @@ function useMutationMock(mutation) {
                         id: userId,
                     } 
                 }
-                console.log(['EditTaskForm.useMutationMock.UpdateTask', requestDataTask])
+                log.debug(['EditTaskForm.useMutationMock.UpdateTask', requestDataTask])
                 expect(requestDataTask).toEqual(finalTaskData)
                 return requestDataTask
             }
@@ -138,7 +138,7 @@ function useMutationMock(mutation) {
     return [
         async (id) => {
             deleteButtonClicked = true
-            console.log(['EditTaskForm.useMutationMock.DeleteTask', id])
+            log.debug(['EditTaskForm.useMutationMock.DeleteTask', id])
             expect(id).toEqual(finalTaskData.id)
             return finalTaskData
         }

@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 
 import { GET_TASKS } from "../../queries/taskQueries";
+import { log } from '../../../utils/utils';
 
 
 // if you wanna acces specific task then query like
@@ -15,7 +16,7 @@ export default function GetTasks() {
       console.error(error)
       return <p>Something Went Wrong</p>;
     }
-    console.log(['GetTasks.data', { data }])
+    log.debug(['GetTasks.data', { data }])
   
     return (
       <>

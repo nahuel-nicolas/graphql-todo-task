@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ADD_TASK } from "../../mutations/taskMutations"
 import { GET_TASKS } from "../../queries/taskQueries";
 import { GET_USERS } from "../../queries/userQueries";
+import { log } from '../../../utils/utils';
 
 
 export default function AddTask({ taskData, userData }) {
@@ -17,7 +18,7 @@ export default function AddTask({ taskData, userData }) {
 
   useEffect(() => {
     const userId = getUserId()
-    console.log(['AddTask.useEffect[]', { userId }])
+    log.debug(['AddTask.useEffect[]', { userId }])
     setTask({
       ...task,
       userId: userId
@@ -53,7 +54,7 @@ export default function AddTask({ taskData, userData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(['AddTask.handleSubmit()', { taskData: task }])
+    log.debug(['AddTask.handleSubmit()', { taskData: task }])
     addTask(
       task.title,
       task.description,

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DELETE_USER } from "../../mutations/userMutations";
 import { GET_USERS } from "../../queries/userQueries";
 import { GET_TASKS } from "../../queries/taskQueries";
+import { log } from '../../../utils/utils';
 
 
 export default function DeleteUser({ deleteUserData }) {
@@ -27,7 +28,7 @@ export default function DeleteUser({ deleteUserData }) {
     }, [userToDelete])
   
     const deleteUserHelper = async () => {
-      console.log(['DeleteUser.deleteUserHelper()', { userToDelete }])
+      log.debug(['DeleteUser.deleteUserHelper()', { userToDelete }])
       return await deleteUser(userToDelete.id)
     }
   

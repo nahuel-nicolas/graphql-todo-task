@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { GET_USERS } from "../graphql/queries/userQueries";
 
 import UserListItem from "./UserListItem"
+import { log } from '../utils/utils';
 
 
 export default function UserList() {
@@ -14,7 +15,7 @@ export default function UserList() {
         return <p>Something Went Wrong</p>;
     }
 
-    console.log(['UserList.data', { data }])
+    log.debug(['UserList.data', { data }])
 
     return (
         <div className="user-list">

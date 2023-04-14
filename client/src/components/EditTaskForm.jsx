@@ -7,7 +7,7 @@ import { GET_TASK, GET_TASKS } from "../graphql/queries/taskQueries"
 import { GET_USERS } from "../graphql/queries/userQueries"
 import { UPDATE_TASK, DELETE_TASK } from "../graphql/mutations/taskMutations"
 import { statusOptions, initUserOptions } from "../utils/options"
-import { getOptionsFromApolloUseQueryResponse, getNewErrors } from "../utils/utils"
+import { getOptionsFromApolloUseQueryResponse, getNewErrors, log } from "../utils/utils"
 
 
 export default function EditTaskForm({ taskId }) {
@@ -26,7 +26,7 @@ export default function EditTaskForm({ taskId }) {
 
     // as per https://github.com/apollographql/react-apollo/issues/4008 recomends using useCallback
     // const onCompletedGetUsers = useCallback((data) => {
-    //     console.log(['EditTaskForm.onCompletedGetUsers', data])
+    //     log.debug(['EditTaskForm.onCompletedGetUsers', data])
     //     if (data) {
     //         setUserOptions([
     //             ...initUserOptions,
@@ -35,14 +35,14 @@ export default function EditTaskForm({ taskId }) {
     //     }
     // }, [])
     // const onCompletedGetTask = useCallback((data) => {
-    //     console.log(['EditTaskForm.onCompletedGetTask', data])
+    //     log.debug(['EditTaskForm.onCompletedGetTask', data])
     //     if (data) {
     //         setTask(data.task)
     //     }
     // }, [])
 
     const onCompletedGetUsers = (data) => {
-        console.log(['EditTaskForm.onCompletedGetUsers', data])
+        log.debug(['EditTaskForm.onCompletedGetUsers', data])
         if (data) {
             setUserOptions([
                 ...initUserOptions,
@@ -51,7 +51,7 @@ export default function EditTaskForm({ taskId }) {
         }
     }
     const onCompletedGetTask = (data) => {
-        console.log(['EditTaskForm.onCompletedGetTask', data])
+        log.debug(['EditTaskForm.onCompletedGetTask', data])
         if (data) {
             setTask({
                 ...data.task,
@@ -95,7 +95,7 @@ export default function EditTaskForm({ taskId }) {
     })
 
     useEffect(() => {
-        console.log(['EditTaskForm.useEffect[task]', task])
+        log.debug(['EditTaskForm.useEffect[task]', task])
     }, [task])
 
     const handleChange = event => {
@@ -113,7 +113,7 @@ export default function EditTaskForm({ taskId }) {
     };
 
     const handleUserIdSelectChange = (event, props) => {
-        console.log(['EditTaskForm.handleUserIdSelectChange', props])
+        log.debug(['EditTaskForm.handleUserIdSelectChange', props])
         setTask({
             ...task,
             user: {
