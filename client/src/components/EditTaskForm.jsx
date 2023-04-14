@@ -53,7 +53,10 @@ export default function EditTaskForm({ taskId }) {
     const onCompletedGetTask = (data) => {
         console.log(['EditTaskForm.onCompletedGetTask', data])
         if (data) {
-            setTask(data.task)
+            setTask({
+                ...data.task,
+                status: statusOptions.find(option => option.text === data.task.status).value
+            })
         }
     }
     
@@ -91,6 +94,10 @@ export default function EditTaskForm({ taskId }) {
         status: null
     })
 
+    useEffect(() => {
+        console.log(['EditTaskForm.useEffect[task]', task])
+    }, [task])
+
     const handleChange = event => {
         setTask({
             ...task,
@@ -106,7 +113,7 @@ export default function EditTaskForm({ taskId }) {
     };
 
     const handleUserIdSelectChange = (event, props) => {
-        console.log([props])
+        console.log(['EditTaskForm.handleUserIdSelectChange', props])
         setTask({
             ...task,
             user: {
@@ -137,11 +144,13 @@ export default function EditTaskForm({ taskId }) {
             task.status, 
             task.user?.id
         )
+        navigateTo('/')
     }
     
     const handleDelete = (e) => {
         e.preventDefault()
-        deleteTask(task.id) 
+        deleteTask(task.id)
+        navigateTo('/') 
     }
 
     if (usersLoading || taskLoading) return <p>Loading...</p>;

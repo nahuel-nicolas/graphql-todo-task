@@ -6,6 +6,7 @@ import * as ReactRouterDom from "react-router-dom";
 
 import EditTaskForm from "./EditTaskForm";
 import { statusOptions } from "../utils/options";
+import { statusOptions as statusKeyNames } from "../config";
 import { getQueryName } from "../utils/utils";
 
 
@@ -93,7 +94,11 @@ function useQueryMock(query, options) {
         if (queryName === 'getUsers') {
             setData({ users })
         } else {
-            setData({ task: initTaskData })
+            const requestDataTask = {
+                ...initTaskData,
+                status: statusKeyNames[initTaskData.status]
+            }
+            setData({ task: requestDataTask })
         }
         setLoading(false)
     }, [])
